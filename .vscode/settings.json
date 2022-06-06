@@ -1,0 +1,10 @@
+{
+    "debug.allowBreakpointsEverywhere": true,
+    "files.autoGuessEncoding": true,
+    "esls.clang.extraArgs": [
+        "  "
+    ],
+    "files.associations": {
+        "drv_serial.h": "c"
+    }
+}
