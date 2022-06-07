@@ -28,6 +28,10 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f0xx_hal.h"
+#include "drv_led.h"
+#include "drv_panel.h"
+#include "drv_rgb.h"
+#include "drv_serial.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -36,6 +40,12 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
+typedef struct
+{
+    uint8_t RX_flag:1;                //IDLE receive flag
+    uint16_t RX_Size;                 //receive length
+    uint8_t RX_pData[UART_RX_LEN];    //DMA receive buffer
+}USART_RECEIVETYPE;
 
 /* USER CODE END ET */
 
@@ -75,6 +85,10 @@ void Error_Handler(void);
 #define RGB_IO_7_GPIO_Port GPIOB
 #define LED2_Pin GPIO_PIN_5
 #define LED2_GPIO_Port GPIOB
+#define scl_Pin GPIO_PIN_8
+#define scl_GPIO_Port GPIOB
+#define sda_Pin GPIO_PIN_9
+#define sda_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
