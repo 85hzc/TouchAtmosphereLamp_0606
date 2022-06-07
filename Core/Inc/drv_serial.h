@@ -16,6 +16,13 @@
 
 #define UART_RX_LEN     128
 
+typedef struct
+{
+    uint8_t RX_flag:1;                //IDLE receive flag
+    uint16_t RX_Size;                 //receive length
+    uint8_t RX_pData[UART_RX_LEN];    //DMA receive buffer
+}USART_RECEIVETYPE;
+
 
 void Drv_SERIAL_Log(const char *format, ...);
 

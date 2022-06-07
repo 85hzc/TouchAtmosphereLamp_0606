@@ -23,20 +23,25 @@ void Send_e133_oneString(uint8_t *r,uint8_t *g,uint8_t *b);
 
 void Drv_RGB_Proc(void)
 {
-  if((HAL_GetTick() - tickstart) >= 10)
+  if((HAL_GetTick() - tickstart) >= 50)
   {
-    //tickstart = HAL_GetTick();
-    memset(buff_R[0], 0xff, CHIP_SIZE);
-    memset(buff_G[0], 0xff, CHIP_SIZE);
-    memset(buff_B[0], 0xff, CHIP_SIZE);
+    tickstart = HAL_GetTick();
+    memset(buff_R[0], 0xf, CHIP_SIZE);
+    memset(buff_G[0], 0xf, CHIP_SIZE);
+    memset(buff_B[0], 0xf, CHIP_SIZE);
     Send_s203_oneString(buff_R[0], buff_G[0], buff_B[0]);
-    //Send_e133_oneString(buff_R[0], buff_G[0], buff_B[0]);
+    Send_e133_oneString(buff_R[0], buff_G[0], buff_B[0]);
   }
 }
 
+#pragma GCC push_options
+#pragma GCC optimize ("O0")
 
 void delayns_100()
 {
+    __ASM("nop");
+    __ASM("nop");
+    __ASM("nop");
     __ASM("nop");
 }
 
@@ -47,10 +52,16 @@ void delayns_300()
     __ASM("nop");
     __ASM("nop");
     __ASM("nop");
+    __ASM("nop");
 }
 
 void delayns_600()
 {
+  __ASM("nop");
+    __ASM("nop");
+    __ASM("nop");
+    __ASM("nop");
+    __ASM("nop");
     __ASM("nop");
     __ASM("nop");
     __ASM("nop");
@@ -71,12 +82,7 @@ void delayns_600()
 
 void delayns_900()
 {
-    __ASM("nop");
-    __ASM("nop");
-    __ASM("nop");
-    __ASM("nop");
-    __ASM("nop");
-    __ASM("nop");
+    
     __ASM("nop");
     __ASM("nop");
     __ASM("nop");
@@ -105,7 +111,7 @@ void delayns_900()
     __ASM("nop");
 }
 
-void Send_8bits1(uint8_t dat)
+void Send_8bits1(uint8_t dat1, uint8_t dat2, uint8_t dat3)
 {
     uint8_t i;
 
@@ -113,7 +119,7 @@ void Send_8bits1(uint8_t dat)
     //delayns_100();
     for(i=0;i<8;i++)
     {
-        if(dat & 0x80)//1,for "1",H:0.8us,L:0.45us;
+        if(dat1 & 0x80)//1,for "1",H:0.8us,L:0.45us;
         {
             RGB_IO_1_PIN_H;
             delayns_900();
@@ -127,6 +133,72 @@ void Send_8bits1(uint8_t dat)
             RGB_IO_1_PIN_L;
             delayns_600();
         }
+        dat1=dat1<<1;
+    }
+#if 1
+    for(i=0;i<8;i++)
+    {
+        if(dat2 & 0x80)//1,for "1",H:0.8us,L:0.45us;
+        {
+            RGB_IO_1_PIN_H;
+            delayns_900();
+            RGB_IO_1_PIN_L;
+            delayns_100();
+        }
+        else    //0 ,for "0",H:0.4us,L: 0.85us
+        {
+            RGB_IO_1_PIN_H;
+            delayns_300();
+            RGB_IO_1_PIN_L;
+            delayns_600();
+        }
+        dat2=dat2<<1;
+    }
+
+    for(i=0;i<8;i++)
+    {
+        if(dat3 & 0x80)//1,for "1",H:0.8us,L:0.45us;
+        {
+            RGB_IO_1_PIN_H;
+            delayns_900();
+            RGB_IO_1_PIN_L;
+            delayns_100();
+        }
+        else    //0 ,for "0",H:0.4us,L: 0.85us
+        {
+            RGB_IO_1_PIN_H;
+            delayns_300();
+            RGB_IO_1_PIN_L;
+            delayns_600();
+        }
+        dat3=dat3<<1;
+    }
+#endif
+}
+
+
+void Send_8bits2(uint8_t dat)
+{
+    uint8_t i;
+
+    //RGB_IO_2_PIN_L;
+    //delayns_100();
+    for(i=0;i<8;i++)
+    {
+        if(dat & 0x80)//1,for "1",H:0.8us,L:0.45us;
+        {
+            RGB_IO_2_PIN_H;
+            delayns_900();
+            RGB_IO_2_PIN_L;
+            delayns_100();
+        }
+        else    //0 ,for "0",H:0.4us,L: 0.85us
+        {
+            RGB_IO_2_PIN_H;
+            delayns_300();
+            RGB_IO_2_PIN_L;
+            delayns_600();
+        }
         dat=dat<<1;
     }
 }
@@ -136,28 +208,29 @@ void Send_s203_oneString(uint8_t *r,uint8_t *g,uint8_t *b)
 {
     uint8_t i=0;
 
+    __disable_irq();
     for(i=0;i<CHIP_SIZE;i++)
     {
-        __disable_irq();
-        Send_8bits1(r[i]);
-        Send_8bits1(g[i]);
-        Send_8bits1(b[i]);
-        __enable_irq();
+        Send_8bits1(r[i], g[i], b[i]);
+        //Send_8bits1(g[i]);
+        //Send_8bits1(b[i]);
     }
+    __enable_irq();
 }
 
-/*/IO 2-7
 void Send_e133_oneString(uint8_t *r,uint8_t *g,uint8_t *b)
 {
     uint8_t i=0;
 
+    __disable_irq();
     for(i=0;i<CHIP_SIZE;i++)
     {
-        __disable_irq();
         Send_8bits2(b[i]);
         Send_8bits2(g[i]);
         Send_8bits2(r[i]);
-        __enable_irq();
     }
+    __enable_irq();
 }
-*/
+
+
+#pragma GCC pop_options

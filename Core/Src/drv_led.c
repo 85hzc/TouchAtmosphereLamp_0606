@@ -33,7 +33,7 @@ void Drv_LED_Proc(void)
   {
     tickstart = HAL_GetTick();
     DRV_LED_TOGGLE;
-    DRV_LED2_TOGGLE;
+    //DRV_LED2_TOGGLE;
   }
 }
 
