@@ -84,7 +84,7 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-
+  Drv_RGB_Init();
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -92,10 +92,9 @@ int main(void)
   MX_DMA_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-
+  Drv_SERIAL_Log("System running.");
   /* USER CODE END 2 */
 
-  Drv_SERIAL_Log("System running.");
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
@@ -222,23 +221,35 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOB, RGB_IO_2_Pin|RGB_IO_3_Pin|RGB_IO_4_Pin|RGB_IO_7_Pin
                           |LED2_Pin|scl_Pin|sda_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : LED1_Pin RGB_IO_1_Pin RGB_IO_5_Pin RGB_IO_6_Pin */
-  GPIO_InitStruct.Pin = LED1_Pin|RGB_IO_1_Pin|RGB_IO_5_Pin|RGB_IO_6_Pin;
+  /*Configure GPIO pin : LED1_Pin */
+  GPIO_InitStruct.Pin = LED1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  HAL_GPIO_Init(LED1_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : KEY_SCAN_Pin */
   GPIO_InitStruct.Pin = KEY_SCAN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(KEY_SCAN_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : RGB_IO_2_Pin RGB_IO_3_Pin RGB_IO_4_Pin RGB_IO_7_Pin
-                           LED2_Pin scl_Pin sda_Pin */
-  GPIO_InitStruct.Pin = RGB_IO_2_Pin|RGB_IO_3_Pin|RGB_IO_4_Pin|RGB_IO_7_Pin
-                          |LED2_Pin|scl_Pin|sda_Pin;
+  /*Configure GPIO pins : RGB_IO_1_Pin RGB_IO_5_Pin RGB_IO_6_Pin */
+  GPIO_InitStruct.Pin = RGB_IO_1_Pin|RGB_IO_5_Pin|RGB_IO_6_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : RGB_IO_2_Pin RGB_IO_3_Pin RGB_IO_4_Pin RGB_IO_7_Pin */
+  GPIO_InitStruct.Pin = RGB_IO_2_Pin|RGB_IO_3_Pin|RGB_IO_4_Pin|RGB_IO_7_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : LED2_Pin scl_Pin sda_Pin */
+  GPIO_InitStruct.Pin = LED2_Pin|scl_Pin|sda_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;

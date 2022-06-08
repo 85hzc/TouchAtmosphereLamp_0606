@@ -13,60 +13,48 @@
 #include "string.h"
 
 #define SC09A_ADDR    0x40
+
+uint8_t key_cmd_flag = 0;
 static uint32_t tickstart;
 
 void Drv_Panel_Proc(void)
 {
-  uint8_t cmd[2];
   uint16_t val = 0;
 
   if((HAL_GetTick() - tickstart) >= 100)
   {
     tickstart = HAL_GetTick();
     
-		memset(cmd, 0, sizeof(cmd));
     //i2c_read(SC09A_ADDR, (char*)cmd, 2);
     val = SC09A_ReadKeyValue();
-    Drv_SERIAL_Log("Drv_Panel_Proc [%x %x] %x", cmd[0], cmd[1], val);
-/*
-    if (cmd[0] & (0x01<<0))
+    if (val != 0xffff)
     {
-      Drv_SERIAL_Log("D8");
+      if (!(val & (0x01<<12))) //CIN0
+      {
+        Drv_SERIAL_Log("CIN0");
+        key_cmd_flag = 12;
+      }
+      if (!(val & (0x01<<11))) //CIN1
+      {
+        Drv_SERIAL_Log("CIN1");
+        key_cmd_flag = 11;
+      }
+      if (!(val & (0x01<<10))) //CIN2
+      {
+        Drv_SERIAL_Log("CIN2");
+        key_cmd_flag = 10;
+      }
+      if (!(val & (0x01<<9))) //CIN3
+      {
+        Drv_SERIAL_Log("CIN3");
+        key_cmd_flag = 9;
+      }
+      if (!(val & (0x01<<8))) //CIN4
+      {
+        Drv_SERIAL_Log("CIN4");
+        key_cmd_flag = 8;
+      }
     }
-    if (cmd[0] & (0x01<<1))
-    {
-      Drv_SERIAL_Log("D9");
-    }
-    if (cmd[0] & (0x01<<2))
-    {
-      Drv_SERIAL_Log("D10");
-    }
-    if (cmd[0] & (0x01<<3))
-    {
-      Drv_SERIAL_Log("D11");
-    }
-    if (cmd[0] & (0x01<<4))
-    {
-      Drv_SERIAL_Log("D12");
-    }
-
-    if (cmd[1] & (0x80>>0))
-    {
-      Drv_SERIAL_Log("D7");
-    }
-    if (cmd[1] & (0x80>>1))
-    {
-      Drv_SERIAL_Log("D6");
-    }
-    if (cmd[1] & (0x80>>2))
-    {
-      Drv_SERIAL_Log("D5");
-    }
-    if (cmd[1] & (0x80>>3))
-    {
-      Drv_SERIAL_Log("D4");
-    }
-*/
   }
 }
 
