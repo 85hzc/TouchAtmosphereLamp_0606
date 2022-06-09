@@ -39,7 +39,7 @@ typedef struct{
  unsigned char R;
  unsigned char G;
  unsigned char B;
- int8_t        l;
+ int16_t       l;
 } COLOR_RGB;
  
 //hsv data struct

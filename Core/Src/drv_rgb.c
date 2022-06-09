@@ -12,19 +12,19 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
-
+#include <stdbool.h>
 #include "drv_rgb.h"
 
 /* Private variables ---------------------------------------------------------*/
 static uint32_t tickstart;
 #if 0
-uint8_t                         buff_G[IO_SIZE][CHIP_SIZE];
-uint8_t                         buff_R[IO_SIZE][CHIP_SIZE];
-uint8_t                         buff_B[IO_SIZE][CHIP_SIZE];
+uint8_t         buff_G[IO_SIZE][CHIP_SIZE];
+uint8_t         buff_R[IO_SIZE][CHIP_SIZE];
+uint8_t         buff_B[IO_SIZE][CHIP_SIZE];
 #else
-uint8_t                         buff_G = 0x10, buff_R = 0, buff_B = 0;
+volatile uint8_t         buff_G=0xff, buff_R=0xff, buff_B=0xff;
 #endif
-COLOR_RGB rgb_v;
+volatile COLOR_RGB       rgb_v;
 
 extern uint8_t key_cmd_flag;
 
@@ -188,7 +188,7 @@ static void HSV_TO_RGB(COLOR_HSV* input,COLOR_RGB* output)  //convert HSV value 
   * @param  : None
   * @retval : None
   *-----------------------------------------------------------------------------*/
-void adjustBrightness(int step)             //adjust RGB brightness
+void adjustBrightness(int16_t step)             //adjust RGB brightness
 {
     COLOR_HSV hsv_v;
     
@@ -211,10 +211,11 @@ void adjustBrightness(int step)             //adjust RGB brightness
 void ColorGradualDimming(uint8_t Red1, uint8_t Green1, uint8_t Blue1)
 {
     static unsigned char Red0 = 0, Green0 = 0, Blue0 = 0;  // 起始三原色
+    static float f_red0 = 0.0, f_green0 = 0.0, f_blue0 = 0.0;
     int  RedMinus, GreenMinus, BlueMinus; // 颜色差（color1 - color0）
     unsigned char NStep;              // 需要几步
     float    RedStep, GreenStep, BlueStep;    // 各色步进值
-    unsigned char stepgo;
+    uint8_t stepgo;
 
     // 计算需要多少步（取差值的最大值）
     RedMinus   = Red1 - Red0;
@@ -229,21 +230,32 @@ void ColorGradualDimming(uint8_t Red1, uint8_t Green1, uint8_t Blue1)
     GreenStep = (float)GreenMinus / NStep;
     BlueStep  = (float)BlueMinus  / NStep;
 
+    Drv_SERIAL_Log("rgb step:%f,%f,%f", RedStep, GreenStep, BlueStep);
     // 渐变开始
     for ( stepgo = 0; stepgo < NStep; stepgo++ )
     {
+        /*
         Red0    += (int)(RedStep);
         Green0  += (int)(GreenStep);
         Blue0   += (int)(BlueStep);
+        */
+        f_red0      += RedStep;
+        f_green0    += GreenStep;
+        f_blue0     += BlueStep;
 
-        //Send_s203_line1(Red0, Green0, Blue0);
-        //Send_e133_line2(Red0, Green0, Blue0);
-        Send_e133_line3(Red0, Green0, Blue0);//ok
-        //Send_e133_line4(Red0, Green0, Blue0);//ok
-        //Send_e133_line5(Red0, Green0, Blue0);//ok
-        //Send_e133_line6(Red0, Green0, Blue0);//ok
-        //Send_e133_line7(Red0, Green0, Blue0);//ok
-        HAL_Delay(10);
+        Red0        = (int)(f_red0);
+        Green0      = (int)(f_green0);
+        Blue0       = (int)(f_blue0);
+
+        //Drv_SERIAL_Log("step:%d [%d,%d,%d]", stepgo, Red0, Green0, Blue0);
+        Send_s203_line1(Red0, Green0, Blue0);
+        Send_e133_line2(Red0, Green0, Blue0);
+        Send_e133_line3(Red0, Green0, Blue0);
+        Send_e133_line4(Red0, Green0, Blue0);
+        Send_e133_line5(Red0, Green0, Blue0);
+        Send_e133_line6(Red0, Green0, Blue0);
+        Send_e133_line7(Red0, Green0, Blue0);
+        HAL_Delay(1);
     }
 
     // 记录当前颜色
@@ -257,52 +269,142 @@ void Drv_RGB_Init(void)
     rgb_v.R = buff_R;
     rgb_v.G = buff_G;
     rgb_v.B = buff_B;
-    rgb_v.l = 0x64;
+    rgb_v.l = 100;
 }
 
+typedef enum
+{
+    red_time,
+    green_time,
+    blue_time,
+
+    yellow_time,
+    pink_time,
+
+} color_e;
+
+bool switch_on_off = 0;
 void Drv_RGB_Proc(void)
 {
+    static color_e up_type = red_time;
+    static color_e down_type = yellow_time;
+
   if(((HAL_GetTick() - tickstart) >= 50) && key_cmd_flag)
   {
     tickstart = HAL_GetTick();
 
-    Drv_SERIAL_Log("key_cmd_flag %d", key_cmd_flag);
     switch(key_cmd_flag)
     {
-      case 12:
-        adjustBrightness(-10);
+      case 12:  //up
+      {
+        switch_on_off = true;
+        Drv_SERIAL_Log("switch RGB");
+        switch (up_type)
+        {
+            case red_time:
+                up_type = green_time;
+                buff_G = 0;
+                buff_R = 0xff;
+                buff_B = 0;
+                break;
+
+            case green_time:
+                up_type = blue_time;
+                buff_G = 0xff;
+                buff_R = 0;
+                buff_B = 0;
+                break;
+
+            case blue_time:
+            default:
+                up_type = red_time;
+                buff_G = 0;
+                buff_R = 0;
+                buff_B = 0xff;
+                break;
+        }
+        rgb_v.G = buff_G;
+        rgb_v.R = buff_R;
+        rgb_v.B = buff_B;
+        break;
+      }
+      case 8: //right
+      {
+        switch_on_off = true;
+        Drv_SERIAL_Log("turn up");
+        adjustBrightness(20);
         buff_G = rgb_v.G;
         buff_R = rgb_v.R;
         buff_B = rgb_v.B;
         break;
-
-      case 11:
-        adjustBrightness(10);
+      }
+      case 11:  //left
+      {
+        switch_on_off = true;
+        Drv_SERIAL_Log("turn down");
+        adjustBrightness(-20);
         buff_G = rgb_v.G;
         buff_R = rgb_v.R;
         buff_B = rgb_v.B;
         break;
-
-      case 10:
-        buff_G = 0;
-        buff_R = 0;
-        buff_B = 0;
+      }
+      case 10:  //on/off
+      {
+        switch_on_off = !switch_on_off;
+        Drv_SERIAL_Log("%s", switch_on_off==true ? "on":"off");
+        if (switch_on_off)
+        {
+            buff_G = rgb_v.G;
+            buff_R = rgb_v.R;
+            buff_B = rgb_v.B;
+        }
+        else
+        {
+            buff_G = 0;
+            buff_R = 0;
+            buff_B = 0;
+        }
         break;
+      }
+      case 9: //down
+      {
+        switch_on_off = true;
+        Drv_SERIAL_Log("switch YPG");
+        switch (down_type)
+        {
+            case yellow_time:
+                down_type = pink_time;
+                buff_G = 0xff;
+                buff_R = 0xff;
+                buff_B = 0;
+                break;
 
-      case 9:
-        buff_G = 0xff;
-        buff_R = 0xff;
-        buff_B = 0xff;
-        break;
+            case pink_time:
+                down_type = green_time;
+                buff_G = 0x14;
+                buff_R = 0xff;
+                buff_B = 0x93;
+                break;
 
-      case 8:
+            case green_time:
+            default:
+                down_type = yellow_time;
+                buff_G = 0xff;
+                buff_R = 0;
+                buff_B = 0;
+                break;
+        }
+        rgb_v.G = buff_G;
+        rgb_v.R = buff_R;
+        rgb_v.B = buff_B;
         break;
+      }
 
       default:
         break;
     }
     key_cmd_flag = 0;
-    Drv_SERIAL_Log("RGB %x %x %x", buff_R, buff_G, buff_B);
+    Drv_SERIAL_Log("RGB 0x%x 0x%x 0x%x", buff_R, buff_G, buff_B);
     ColorGradualDimming(buff_R, buff_G, buff_B);
   }
 }
@@ -450,7 +552,7 @@ void Send_8bits1(uint8_t dat1, uint8_t dat2, uint8_t dat3)
 }
 
 
-void Send_8bits2(uint8_t dat)
+void Send_8bits2(uint8_t dat1, uint8_t dat2, uint8_t dat3)
 {
     uint8_t i;
 
@@ -458,7 +560,7 @@ void Send_8bits2(uint8_t dat)
     //delayns_100();
     for(i=0;i<8;i++)
     {
-        if(dat & 0x80)//1,for "1",H:0.8us,L:0.45us;
+        if(dat1 & 0x80)//1,for "1",H:0.8us,L:0.45us;
         {
             RGB_IO_2_PIN_H;
             delayns_900();
@@ -472,17 +574,53 @@ void Send_8bits2(uint8_t dat)
             RGB_IO_2_PIN_L;
             delayns_600();
         }
-        dat=dat<<1;
+        dat1=dat1<<1;
+    }
+    for(i=0;i<8;i++)
+    {
+        if(dat2 & 0x80)//1,for "1",H:0.8us,L:0.45us;
+        {
+            RGB_IO_2_PIN_H;
+            delayns_900();
+            RGB_IO_2_PIN_L;
+            delayns_100();
+        }
+        else    //0 ,for "0",H:0.4us,L: 0.85us
+        {
+            RGB_IO_2_PIN_H;
+            delayns_300();
+            RGB_IO_2_PIN_L;
+            delayns_600();
+        }
+        dat2=dat2<<1;
+    }
+    for(i=0;i<8;i++)
+    {
+        if(dat3 & 0x80)//1,for "1",H:0.8us,L:0.45us;
+        {
+            RGB_IO_2_PIN_H;
+            delayns_900();
+            RGB_IO_2_PIN_L;
+            delayns_100();
+        }
+        else    //0 ,for "0",H:0.4us,L: 0.85us
+        {
+            RGB_IO_2_PIN_H;
+            delayns_300();
+            RGB_IO_2_PIN_L;
+            delayns_600();
+        }
+        dat3=dat3<<1;
     }
 }
 
-void Send_8bits3(uint8_t dat)
+void Send_8bits3(uint8_t dat1, uint8_t dat2, uint8_t dat3)
 {
     uint8_t i;
 
     for(i=0;i<8;i++)
     {
-        if(dat & 0x80)//1,for "1",H:0.8us,L:0.45us;
+        if(dat1 & 0x80)//1,for "1",H:0.8us,L:0.45us;
         {
             RGB_IO_3_PIN_H;
             delayns_900();
@@ -496,17 +634,53 @@ void Send_8bits3(uint8_t dat)
             RGB_IO_3_PIN_L;
             delayns_600();
         }
-        dat=dat<<1;
+        dat1=dat1<<1;
+    }
+    for(i=0;i<8;i++)
+    {
+        if(dat2 & 0x80)//1,for "1",H:0.8us,L:0.45us;
+        {
+            RGB_IO_3_PIN_H;
+            delayns_900();
+            RGB_IO_3_PIN_L;
+            delayns_100();
+        }
+        else    //0 ,for "0",H:0.4us,L: 0.85us
+        {
+            RGB_IO_3_PIN_H;
+            delayns_300();
+            RGB_IO_3_PIN_L;
+            delayns_600();
+        }
+        dat2=dat2<<1;
+    }
+    for(i=0;i<8;i++)
+    {
+        if(dat3 & 0x80)//1,for "1",H:0.8us,L:0.45us;
+        {
+            RGB_IO_3_PIN_H;
+            delayns_900();
+            RGB_IO_3_PIN_L;
+            delayns_100();
+        }
+        else    //0 ,for "0",H:0.4us,L: 0.85us
+        {
+            RGB_IO_3_PIN_H;
+            delayns_300();
+            RGB_IO_3_PIN_L;
+            delayns_600();
+        }
+        dat3=dat3<<1;
     }
 }
 
-void Send_8bits4(uint8_t dat)
+void Send_8bits4(uint8_t dat1, uint8_t dat2, uint8_t dat3)
 {
     uint8_t i;
 
     for(i=0;i<8;i++)
     {
-        if(dat & 0x80)//1,for "1",H:0.8us,L:0.45us;
+        if(dat1 & 0x80)//1,for "1",H:0.8us,L:0.45us;
         {
             RGB_IO_4_PIN_H;
             delayns_900();
@@ -520,17 +694,53 @@ void Send_8bits4(uint8_t dat)
             RGB_IO_4_PIN_L;
             delayns_600();
         }
-        dat=dat<<1;
+        dat1=dat1<<1;
+    }
+    for(i=0;i<8;i++)
+    {
+        if(dat2 & 0x80)//1,for "1",H:0.8us,L:0.45us;
+        {
+            RGB_IO_4_PIN_H;
+            delayns_900();
+            RGB_IO_4_PIN_L;
+            delayns_100();
+        }
+        else    //0 ,for "0",H:0.4us,L: 0.85us
+        {
+            RGB_IO_4_PIN_H;
+            delayns_300();
+            RGB_IO_4_PIN_L;
+            delayns_600();
+        }
+        dat2=dat2<<1;
+    }
+    for(i=0;i<8;i++)
+    {
+        if(dat3 & 0x80)//1,for "1",H:0.8us,L:0.45us;
+        {
+            RGB_IO_4_PIN_H;
+            delayns_900();
+            RGB_IO_4_PIN_L;
+            delayns_100();
+        }
+        else    //0 ,for "0",H:0.4us,L: 0.85us
+        {
+            RGB_IO_4_PIN_H;
+            delayns_300();
+            RGB_IO_4_PIN_L;
+            delayns_600();
+        }
+        dat3=dat3<<1;
     }
 }
 
-void Send_8bits5(uint8_t dat)
+void Send_8bits5(uint8_t dat1, uint8_t dat2, uint8_t dat3)
 {
     uint8_t i;
 
     for(i=0;i<8;i++)
     {
-        if(dat & 0x80)//1,for "1",H:0.8us,L:0.45us;
+        if(dat1 & 0x80)//1,for "1",H:0.8us,L:0.45us;
         {
             RGB_IO_5_PIN_H;
             delayns_900();
@@ -544,17 +754,53 @@ void Send_8bits5(uint8_t dat)
             RGB_IO_5_PIN_L;
             delayns_600();
         }
-        dat=dat<<1;
+        dat1=dat1<<1;
+    }
+    for(i=0;i<8;i++)
+    {
+        if(dat2 & 0x80)//1,for "1",H:0.8us,L:0.45us;
+        {
+            RGB_IO_5_PIN_H;
+            delayns_900();
+            RGB_IO_5_PIN_L;
+            delayns_100();
+        }
+        else    //0 ,for "0",H:0.4us,L: 0.85us
+        {
+            RGB_IO_5_PIN_H;
+            delayns_300();
+            RGB_IO_5_PIN_L;
+            delayns_600();
+        }
+        dat2=dat2<<1;
+    }
+    for(i=0;i<8;i++)
+    {
+        if(dat3 & 0x80)//1,for "1",H:0.8us,L:0.45us;
+        {
+            RGB_IO_5_PIN_H;
+            delayns_900();
+            RGB_IO_5_PIN_L;
+            delayns_100();
+        }
+        else    //0 ,for "0",H:0.4us,L: 0.85us
+        {
+            RGB_IO_5_PIN_H;
+            delayns_300();
+            RGB_IO_5_PIN_L;
+            delayns_600();
+        }
+        dat3=dat3<<1;
     }
 }
 
-void Send_8bits6(uint8_t dat)
+void Send_8bits6(uint8_t dat1, uint8_t dat2, uint8_t dat3)
 {
     uint8_t i;
 
     for(i=0;i<8;i++)
     {
-        if(dat & 0x80)//1,for "1",H:0.8us,L:0.45us;
+        if(dat1 & 0x80)//1,for "1",H:0.8us,L:0.45us;
         {
             RGB_IO_6_PIN_H;
             delayns_900();
@@ -568,17 +814,53 @@ void Send_8bits6(uint8_t dat)
             RGB_IO_6_PIN_L;
             delayns_600();
         }
-        dat=dat<<1;
+        dat1=dat1<<1;
+    }
+    for(i=0;i<8;i++)
+    {
+        if(dat2 & 0x80)//1,for "1",H:0.8us,L:0.45us;
+        {
+            RGB_IO_6_PIN_H;
+            delayns_900();
+            RGB_IO_6_PIN_L;
+            delayns_100();
+        }
+        else    //0 ,for "0",H:0.4us,L: 0.85us
+        {
+            RGB_IO_6_PIN_H;
+            delayns_300();
+            RGB_IO_6_PIN_L;
+            delayns_600();
+        }
+        dat2=dat2<<1;
+    }
+    for(i=0;i<8;i++)
+    {
+        if(dat3 & 0x80)//1,for "1",H:0.8us,L:0.45us;
+        {
+            RGB_IO_6_PIN_H;
+            delayns_900();
+            RGB_IO_6_PIN_L;
+            delayns_100();
+        }
+        else    //0 ,for "0",H:0.4us,L: 0.85us
+        {
+            RGB_IO_6_PIN_H;
+            delayns_300();
+            RGB_IO_6_PIN_L;
+            delayns_600();
+        }
+        dat3=dat3<<1;
     }
 }
 
-void Send_8bits7(uint8_t dat)
+void Send_8bits7(uint8_t dat1, uint8_t dat2, uint8_t dat3)
 {
     uint8_t i;
 
     for(i=0;i<8;i++)
     {
-        if(dat & 0x80)//1,for "1",H:0.8us,L:0.45us;
+        if(dat1 & 0x80)//1,for "1",H:0.8us,L:0.45us;
         {
             RGB_IO_7_PIN_H;
             delayns_900();
@@ -592,7 +874,45 @@ void Send_8bits7(uint8_t dat)
             RGB_IO_7_PIN_L;
             delayns_600();
         }
-        dat=dat<<1;
+        dat1=dat1<<1;
+    }
+
+    for(i=0;i<8;i++)
+    {
+        if(dat2 & 0x80)//1,for "1",H:0.8us,L:0.45us;
+        {
+            RGB_IO_7_PIN_H;
+            delayns_900();
+            RGB_IO_7_PIN_L;
+            delayns_100();
+        }
+        else    //0 ,for "0",H:0.4us,L: 0.85us
+        {
+            RGB_IO_7_PIN_H;
+            delayns_300();
+            RGB_IO_7_PIN_L;
+            delayns_600();
+        }
+        dat2=dat2<<1;
+    }
+
+    for(i=0;i<8;i++)
+    {
+        if(dat3 & 0x80)//1,for "1",H:0.8us,L:0.45us;
+        {
+            RGB_IO_7_PIN_H;
+            delayns_900();
+            RGB_IO_7_PIN_L;
+            delayns_100();
+        }
+        else    //0 ,for "0",H:0.4us,L: 0.85us
+        {
+            RGB_IO_7_PIN_H;
+            delayns_300();
+            RGB_IO_7_PIN_L;
+            delayns_600();
+        }
+        dat3=dat3<<1;
     }
 }
 //IO 1
@@ -603,9 +923,7 @@ void Send_s203_line1(uint8_t r,uint8_t g,uint8_t b)
     __disable_irq();
     for(i=0;i<CHIP_SIZE;i++)
     {
-        Send_8bits1(r, g, b);
-        //Send_8bits1(g);
-        //Send_8bits1(b);
+        Send_8bits1(b, g, r);
     }
     __enable_irq();
 }
@@ -617,9 +935,7 @@ void Send_e133_line2(uint8_t r,uint8_t g,uint8_t b)
     __disable_irq();
     for(i=0;i<CHIP_SIZE;i++)
     {
-        Send_8bits2(b);
-        Send_8bits2(g);
-        Send_8bits2(r);
+        Send_8bits2(r,g,b);
     }
     __enable_irq();
 }
@@ -630,9 +946,7 @@ void Send_e133_line3(uint8_t r,uint8_t g,uint8_t b)
     __disable_irq();
     for(i=0;i<CHIP_SIZE;i++)
     {
-        Send_8bits3(b);
-        Send_8bits3(g);
-        Send_8bits3(r);
+        Send_8bits3(r,g,b);
     }
     __enable_irq();
 }
@@ -643,9 +957,7 @@ void Send_e133_line4(uint8_t r,uint8_t g,uint8_t b)
     __disable_irq();
     for(i=0;i<CHIP_SIZE;i++)
     {
-        Send_8bits4(b);
-        Send_8bits4(g);
-        Send_8bits4(r);
+        Send_8bits4(r,g,b);
     }
     __enable_irq();
 }
@@ -656,9 +968,7 @@ void Send_e133_line5(uint8_t r,uint8_t g,uint8_t b)
     __disable_irq();
     for(i=0;i<CHIP_SIZE;i++)
     {
-        Send_8bits5(b);
-        Send_8bits5(g);
-        Send_8bits5(r);
+        Send_8bits5(r,g,b);
     }
     __enable_irq();
 }
@@ -669,9 +979,7 @@ void Send_e133_line6(uint8_t r,uint8_t g,uint8_t b)
     __disable_irq();
     for(i=0;i<CHIP_SIZE;i++)
     {
-        Send_8bits6(b);
-        Send_8bits6(g);
-        Send_8bits6(r);
+        Send_8bits6(r,g,b);
     }
     __enable_irq();
 }
@@ -682,9 +990,7 @@ void Send_e133_line7(uint8_t r,uint8_t g,uint8_t b)
     __disable_irq();
     for(i=0;i<CHIP_SIZE;i++)
     {
-        Send_8bits7(b);
-        Send_8bits7(g);
-        Send_8bits7(r);
+        Send_8bits7(r,g,b);
     }
     __enable_irq();
 }

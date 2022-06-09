@@ -14,7 +14,7 @@
 
 #define SC09A_ADDR    0x40
 
-uint8_t key_cmd_flag = 0;
+volatile uint8_t key_cmd_flag = 10;//"ON" when boot
 static uint32_t tickstart;
 
 void Drv_Panel_Proc(void)
@@ -29,29 +29,24 @@ void Drv_Panel_Proc(void)
     val = SC09A_ReadKeyValue();
     if (val != 0xffff)
     {
-      if (!(val & (0x01<<12))) //CIN0
+      if (!(val & (0x01<<12))) //CIN0  UP
       {
-        Drv_SERIAL_Log("CIN0");
         key_cmd_flag = 12;
       }
-      if (!(val & (0x01<<11))) //CIN1
+      if (!(val & (0x01<<11))) //CIN1  LEFT
       {
-        Drv_SERIAL_Log("CIN1");
         key_cmd_flag = 11;
       }
-      if (!(val & (0x01<<10))) //CIN2
+      if (!(val & (0x01<<10))) //CIN2  ON/OFF
       {
-        Drv_SERIAL_Log("CIN2");
         key_cmd_flag = 10;
       }
-      if (!(val & (0x01<<9))) //CIN3
+      if (!(val & (0x01<<9))) //CIN3  DOWN
       {
-        Drv_SERIAL_Log("CIN3");
         key_cmd_flag = 9;
       }
-      if (!(val & (0x01<<8))) //CIN4
+      if (!(val & (0x01<<8))) //CIN4  RIGHT
       {
-        Drv_SERIAL_Log("CIN4");
         key_cmd_flag = 8;
       }
     }
