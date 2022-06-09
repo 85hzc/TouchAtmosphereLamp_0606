@@ -14,7 +14,7 @@
 
 #define SC09A_ADDR    0x40
 
-volatile uint8_t key_cmd_flag = 10;//"ON" when boot
+uint8_t key_cmd_flag = 10;//"ON" when boot
 static uint32_t tickstart;
 
 void Drv_Panel_Proc(void)

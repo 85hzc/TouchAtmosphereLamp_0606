@@ -15,8 +15,13 @@
 #include "stm32f0xx_hal.h"
 #include "main.h"
 
-#define CHIP_SIZE           (32)
-#define IO_SIZE             (7)
+#define LINE_1_SIZE          (24)
+#define LINE_2_SIZE          (27)
+#define LINE_3_SIZE          (26)
+#define LINE_4_SIZE          (26)
+#define LINE_5_SIZE          (26)
+#define LINE_6_SIZE          (26)
+#define LINE_7_SIZE          (25)
 
 #define RGB_IO_1_PIN_H       (GPIOA->BSRR = RGB_IO_1_Pin)                        // 输出高电平
 #define RGB_IO_1_PIN_L       (GPIOA->BSRR = (uint32_t)RGB_IO_1_Pin << 16)        // 输出低电平 
@@ -48,6 +53,16 @@ typedef struct{
  float S;
  float V;
 } COLOR_HSV;
+
+typedef enum
+{
+    red_time,
+    green_time,
+    blue_time,
+
+    yellow_time,
+    pink_time,
+} color_e;
 
 /* Private function prototypes -----------------------------------------------*/
 

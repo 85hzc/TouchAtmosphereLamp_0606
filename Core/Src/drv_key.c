@@ -17,6 +17,8 @@
 /* Private variables ---------------------------------------------------------*/
 static uint32_t tickstart;
 
+extern uint8_t key_cmd_flag;
+
 /* Private function prototypes -----------------------------------------------*/
 
 
