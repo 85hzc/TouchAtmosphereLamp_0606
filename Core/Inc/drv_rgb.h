@@ -15,6 +15,18 @@
 #include "stm32f0xx_hal.h"
 #include "main.h"
 
+
+#define CUBE_COL_SIZE        (32)
+
+#if 0
+#define LINE_1_SIZE          (24)
+#define LINE_2_SIZE          (27)
+#define LINE_3_SIZE          (10)
+#define LINE_4_SIZE          (10)
+#define LINE_5_SIZE          (10)
+#define LINE_6_SIZE          (10)
+#define LINE_7_SIZE          (10)
+#else
 #define LINE_1_SIZE          (24)
 #define LINE_2_SIZE          (27)
 #define LINE_3_SIZE          (26)
@@ -22,6 +34,7 @@
 #define LINE_5_SIZE          (26)
 #define LINE_6_SIZE          (26)
 #define LINE_7_SIZE          (25)
+#endif
 
 #define RGB_IO_1_PIN_H       (GPIOA->BSRR = RGB_IO_1_Pin)                        // 输出高电平
 #define RGB_IO_1_PIN_L       (GPIOA->BSRR = (uint32_t)RGB_IO_1_Pin << 16)        // 输出低电平 

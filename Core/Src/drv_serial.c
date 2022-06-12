@@ -23,6 +23,8 @@ extern UART_HandleTypeDef huart2;
 extern DMA_HandleTypeDef hdma_usart2_rx;
 extern DMA_HandleTypeDef hdma_usart2_tx;
 
+extern volatile uint8_t key_cmd_flag;
+
 /* Private function prototypes -----------------------------------------------*/
 //static uint8_t Drv_SERIAL_Write(uint8_t * pData, uint32_t Timeout);
 static uint8_t Drv_SERIAL_Read(uint8_t * pData, uint32_t Timeout);
@@ -57,16 +59,30 @@ void Drv_SERIAL_Proc(void)
   {
       UsartType2.RX_flag = 0;
 
-      #if 0
-      printf("BLE rx len=%d  [",UsartType2.RX_Size);
-      for(int i=0; i<UsartType2.RX_Size; i++)
+      //HAL_UART_Transmit(&huart2, UsartType2.RX_pData, UsartType2.RX_Size, 0xffff);
+      Drv_SERIAL_Log("Drv_SERIAL_Proc rx 0x%x len = %d",UsartType2.RX_pData[0],UsartType2.RX_Size);
+
+      if (UsartType2.RX_pData[0] == 1) //CIN0  UP
       {
-          printf("0x%02x ",UsartType2.RX_pData[i]);
+        key_cmd_flag = 12;
       }
-      printf("]\r\n");
-      #endif
-      HAL_UART_Transmit(&huart2, UsartType2.RX_pData, UsartType2.RX_Size, 0xffff);
-      Drv_SERIAL_Log("Drv_SERIAL_Proc rx len = %d",UsartType2.RX_Size);
+      if (UsartType2.RX_pData[0] == 2) //CIN1  LEFT
+      {
+        key_cmd_flag = 11;
+      }
+      if (UsartType2.RX_pData[0] == 3) //CIN2  ON/OFF
+      {
+        key_cmd_flag = 10;
+      }
+      if (UsartType2.RX_pData[0] == 5) //CIN3  DOWN
+      {
+        key_cmd_flag = 9;
+      }
+      if (UsartType2.RX_pData[0] == 4) //CIN4  RIGHT
+      {
+        key_cmd_flag = 8;
+      }
+
   }
   
 }
