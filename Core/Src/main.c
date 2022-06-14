@@ -21,7 +21,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "drv_serial.h"
+#include "drv_rgb.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -44,6 +45,7 @@ DMA_HandleTypeDef hdma_usart2_rx;
 DMA_HandleTypeDef hdma_usart2_tx;
 
 /* USER CODE BEGIN PV */
+extern USART_RECEIVETYPE        UsartType2;
 
 /* USER CODE END PV */
 
@@ -92,6 +94,10 @@ int main(void)
   MX_DMA_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
+
+  HAL_UART_Receive_DMA(&huart2, UsartType2.RX_pData, UART_RX_LEN);
+  __HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE);
+
   Drv_SERIAL_Log("System running.");
   /* USER CODE END 2 */
 

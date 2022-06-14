@@ -10,6 +10,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "drv_panel.h"
+#include "drv_serial.h"
 #include "string.h"
 
 #define SC09A_ADDR    0x40

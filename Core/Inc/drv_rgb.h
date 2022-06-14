@@ -15,6 +15,33 @@
 #include "stm32f0xx_hal.h"
 #include "main.h"
 
+#define delay100 {\
+\
+}
+
+#define delay900 {\
+__ASM("nop");__ASM("nop");__ASM("nop");__ASM("nop");__ASM("nop");\
+__ASM("nop");__ASM("nop");__ASM("nop");__ASM("nop");__ASM("nop");\
+__ASM("nop");__ASM("nop");__ASM("nop");__ASM("nop");__ASM("nop");\
+__ASM("nop");__ASM("nop");__ASM("nop");__ASM("nop");__ASM("nop");\
+__ASM("nop");__ASM("nop");__ASM("nop");__ASM("nop");__ASM("nop");\
+__ASM("nop");__ASM("nop");__ASM("nop");__ASM("nop");__ASM("nop");\
+__ASM("nop");__ASM("nop");__ASM("nop");__ASM("nop");__ASM("nop");\
+__ASM("nop");\
+}
+
+#define delay600 {\
+__ASM("nop");__ASM("nop");__ASM("nop");__ASM("nop");__ASM("nop");\
+__ASM("nop");__ASM("nop");__ASM("nop");__ASM("nop");__ASM("nop");\
+__ASM("nop");__ASM("nop");__ASM("nop");__ASM("nop");__ASM("nop");\
+__ASM("nop");__ASM("nop");__ASM("nop");__ASM("nop");__ASM("nop");\
+__ASM("nop");__ASM("nop");__ASM("nop");__ASM("nop");\
+}
+
+#define delay300 {\
+__ASM("nop");__ASM("nop");__ASM("nop");__ASM("nop");__ASM("nop");\
+__ASM("nop");__ASM("nop");__ASM("nop");__ASM("nop");__ASM("nop");\
+}
 
 #define CUBE_COL_SIZE        (32)
 

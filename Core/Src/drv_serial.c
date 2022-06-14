@@ -86,7 +86,7 @@ void Drv_SERIAL_Proc(void)
   }
   
 }
-
+#ifdef debug_log
 void Drv_SERIAL_Log(const char *format, ...)
 {
   static char log[UART_RX_LEN];
@@ -111,6 +111,6 @@ static uint8_t Drv_SERIAL_Write(uint8_t * pData, uint32_t Timeout)
   return (uint8_t)HAL_UART_Transmit(&huart2, pData, UART_RX_LEN, Timeout);
 }
 */
-
+#endif
 
 /* ---------------------------------------------------- */
