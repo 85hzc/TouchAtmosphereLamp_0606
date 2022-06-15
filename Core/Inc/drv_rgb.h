@@ -102,6 +102,8 @@ typedef enum
 
     yellow_time,
     pink_time,
+	
+		white_time,
 } color_e;
 
 /* Private function prototypes -----------------------------------------------*/
