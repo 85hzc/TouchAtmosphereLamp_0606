@@ -10,8 +10,8 @@
       <TargetName>TouchAtmosphereLamp_0606</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060750::V5.06 update 6 (build 750)::.\ARMCC</pCCUsed>
-      <uAC6>0</uAC6>
+      <pCCUsed>6140000::V6.14::ARMCLANG</pCCUsed>
+      <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>STM32F030C8Tx</Device>
@@ -138,7 +138,7 @@
           </Flash1>
           <bUseTDR>1</bUseTDR>
           <Flash2>BIN\UL2V8M.DLL</Flash2>
-          <Flash3></Flash3>
+          <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -313,7 +313,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>4</Optim>
+            <Optim>7</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -328,7 +328,7 @@
             <uC99>1</uC99>
             <uGnu>0</uGnu>
             <useXO>0</useXO>
-            <v6Lang>5</v6Lang>
+            <v6Lang>3</v6Lang>
             <v6LangP>3</v6LangP>
             <vShortEn>1</vShortEn>
             <vShortWch>1</vShortWch>
@@ -404,6 +404,31 @@
               <FilePath>..\Core\Src\drv_serial.c</FilePath>
             </File>
             <File>
+              <FileName>drv_panel.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\drv_panel.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_rgb.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\drv_rgb.c</FilePath>
+            </File>
+            <File>
+              <FileName>softi2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\softi2c.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\drv_key.c</FilePath>
+            </File>
+            <File>
+              <FileName>SC09A.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\SC09A.c</FilePath>
+            </File>
+            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Core/Src/main.c</FilePath>
@@ -423,71 +448,6 @@
         <Group>
           <GroupName>Drivers/STM32F0xx_HAL_Driver</GroupName>
           <Files>
-            <File>
-              <FileName>stm32f0xx_hal_i2c.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_hal_i2c_ex.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c_ex.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_hal_rcc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_hal_rcc_ex.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc_ex.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_hal_gpio.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_gpio.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_hal_dma.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_dma.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_hal_cortex.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_cortex.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_hal_pwr.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_pwr.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_hal_pwr_ex.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_pwr_ex.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_hal_flash.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_flash.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_hal_flash_ex.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_flash_ex.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_hal_exti.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_exti.c</FilePath>
-            </File>
             <File>
               <FileName>stm32f0xx_hal_tim.c</FileName>
               <FileType>1</FileType>
@@ -610,6 +570,71 @@
                 </FileArmAds>
               </FileOption>
             </File>
+            <File>
+              <FileName>stm32f0xx_hal_rcc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_rcc_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc_ex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_i2c_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c_ex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_gpio.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_dma.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_dma.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_cortex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_cortex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_pwr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_pwr.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_pwr_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_pwr_ex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_flash.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_flash_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_flash_ex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_exti.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_exti.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -632,8 +657,8 @@
   <RTE>
     <apis/>
     <components>
-      <component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="4.3.0" condition="CMSIS Core">
-        <package name="CMSIS" schemaVersion="1.3" url="http://www.keil.com/pack/" vendor="ARM" version="4.5.0"/>
+      <component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="5.5.0" condition="ARMv6_7_8-M Device">
+        <package name="CMSIS" schemaVersion="1.3" url="http://www.keil.com/pack/" vendor="ARM" version="5.8.0"/>
         <targetInfos>
           <targetInfo name="TouchAtmosphereLamp_0606"/>
         </targetInfos>

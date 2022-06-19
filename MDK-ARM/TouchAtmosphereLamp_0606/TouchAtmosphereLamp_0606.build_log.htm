@@ -9,12 +9,12 @@ License Information: huang boaz, 10100, LIC=03CY8-3MH3W-SATDJ-U8S3Q-G89HJ-GWF6D
  
 Tool Versions:
 Toolchain:       MDK-ARM Plus  Version: 5.30.0.0
-Toolchain Path:  C:\Keil_v5\ARM\ARMCC\Bin
-C Compiler:      Armcc.exe V5.06 update 6 (build 750)
-Assembler:       Armasm.exe V5.06 update 6 (build 750)
-Linker/Locator:  ArmLink.exe V5.06 update 6 (build 750)
-Library Manager: ArmAr.exe V5.06 update 6 (build 750)
-Hex Converter:   FromElf.exe V5.06 update 6 (build 750)
+Toolchain Path:  C:\Keil_v5\ARM\ARMCLANG\Bin
+C Compiler:      ArmClang.exe V6.14
+Assembler:       Armasm.exe V6.14
+Linker/Locator:  ArmLink.exe V6.14
+Library Manager: ArmAr.exe V6.14
+Hex Converter:   FromElf.exe V6.14
 CPU DLL:         SARMCM3.DLL V5.30.0.0
 Dialog DLL:      DARMCM1.DLL V1.19.3.0
 Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V3.0.7.0
@@ -22,21 +22,29 @@ Dialog DLL:      TARMCM1.DLL V1.14.2.0
  
 <h2>Project:</h2>
 C:\Users\boaz\Desktop\wp\TouchAtmosphereLamp_0606\MDK-ARM\TouchAtmosphereLamp_0606.uvprojx
-Project File Date:  06/07/2022
+Project File Date:  06/12/2022
 
 <h2>Output:</h2>
-*** Using Compiler 'V5.06 update 6 (build 750)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
+*** Using Compiler 'V6.14', folder: 'C:\Keil_v5\ARM\ARMCLANG\Bin'
 Build target 'TouchAtmosphereLamp_0606'
+../Core/Src/main.c(89): warning: implicit declaration of function 'Drv_RGB_Init' is invalid in C99 [-Wimplicit-function-declaration]
+  Drv_RGB_Init();
+  ^
+../Core/Src/main.c(108): warning: implicit declaration of function 'Drv_LED_Proc' is invalid in C99 [-Wimplicit-function-declaration]
+                Drv_LED_Proc();
+                ^
+../Core/Src/main.c(111): warning: implicit declaration of function 'Drv_Panel_Proc' is invalid in C99 [-Wimplicit-function-declaration]
+    Drv_Panel_Proc();
+    ^
+../Core/Src/main.c(112): warning: implicit declaration of function 'Drv_SERIAL_Proc' is invalid in C99 [-Wimplicit-function-declaration]
+    Drv_SERIAL_Proc();
+    ^
+4 warnings generated.
 compiling main.c...
-../Core/Src/main.c(112): warning:  #223-D: function "Drv_LED_Proc" declared implicitly
-  		Drv_LED_Proc();
-../Core/Src/main.c(113): warning:  #223-D: function "Drv_SERIAL_Proc" declared implicitly
-      Drv_SERIAL_Proc();
-../Core/Src/main.c: 2 warnings, 0 errors
 linking...
-Program Size: Code=13532 RO-data=788 RW-data=24 ZI-data=2104  
+Program Size: Code=20076 RO-data=980 RW-data=120 ZI-data=2200  
 FromELF: creating hex file...
-"TouchAtmosphereLamp_0606\TouchAtmosphereLamp_0606.axf" - 0 Error(s), 2 Warning(s).
+"TouchAtmosphereLamp_0606\TouchAtmosphereLamp_0606.axf" - 0 Error(s), 4 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -60,7 +68,7 @@ Package Vendor: Keil
 
    * Component: ARM::CMSIS:CORE:5.5.0
       Include file:  CMSIS\Core\Include\tz_context.h
-Build Time Elapsed:  00:00:01
+Build Time Elapsed:  00:00:03
 </pre>
 </body>
 </html>
