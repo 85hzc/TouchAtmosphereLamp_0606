@@ -55,6 +55,21 @@ void Drv_Panel_Proc(void)
         Drv_SERIAL_Log("CIN1");
         key_cmd_flag = 11;
       }
+      if (!(val & (0x01<<7))) //CIN1  LEFT
+      {
+        Drv_SERIAL_Log("CIN5");
+        key_cmd_flag = 7;
+      }
+      if (!(val & (0x01<<6))) //CIN1  LEFT
+      {
+        Drv_SERIAL_Log("CIN6");
+        key_cmd_flag = 6;
+      }
+      if (!(val & (0x01<<5))) //CIN1  LEFT
+      {
+        Drv_SERIAL_Log("CIN7");
+        key_cmd_flag = 5;
+      }
     }
   }
 }

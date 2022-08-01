@@ -68,6 +68,10 @@ void Error_Handler(void);
 #define RGB_IO_2_GPIO_Port GPIOB
 #define RGB_IO_3_Pin GPIO_PIN_1
 #define RGB_IO_3_GPIO_Port GPIOB
+#define RGB_IO_8_Pin GPIO_PIN_12
+#define RGB_IO_8_GPIO_Port GPIOB
+#define RGB_IO_9_Pin GPIO_PIN_13
+#define RGB_IO_9_GPIO_Port GPIOB
 #define RGB_IO_4_Pin GPIO_PIN_14
 #define RGB_IO_4_GPIO_Port GPIOB
 #define RGB_IO_5_Pin GPIO_PIN_8

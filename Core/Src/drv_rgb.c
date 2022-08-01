@@ -617,6 +617,9 @@ void Drv_RGB_Proc(void)
                 */
                 break;
             }
+            case 7:
+            case 6:
+            case 5:
             case 10:  //on/off
             {
                 switch_on_off = !switch_on_off;
