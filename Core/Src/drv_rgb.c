@@ -113,22 +113,28 @@ static uint32_t GRB48[CUBE_COL_SIZE]={
 extern uint8_t key_cmd_flag;
 
 /* Private function prototypes -----------------------------------------------*/
-void Send_s203_line1(uint8_t r,uint8_t g,uint8_t b);
+//void Send_s203_line1(uint8_t r,uint8_t g,uint8_t b);
+void Send_e133_line1(uint8_t r,uint8_t g,uint8_t b);
 void Send_e133_line2(uint8_t r,uint8_t g,uint8_t b);
 void Send_e133_line3(uint8_t r,uint8_t g,uint8_t b);
 void Send_e133_line4(uint8_t r,uint8_t g,uint8_t b);
 void Send_e133_line5(uint8_t r,uint8_t g,uint8_t b);
 void Send_e133_line6(uint8_t r,uint8_t g,uint8_t b);
 void Send_e133_line7(uint8_t r,uint8_t g,uint8_t b);
+void Send_e133_line8(uint8_t r,uint8_t g,uint8_t b);
+void Send_e133_line9(uint8_t r,uint8_t g,uint8_t b);
 
-void Send_s203_line1_laying(uint8_t *r,uint8_t *g,uint8_t *b);
+//void Send_s203_line1_laying(uint8_t *r,uint8_t *g,uint8_t *b);
+void Send_e133_line1_laying(uint8_t *r,uint8_t *g,uint8_t *b);
 void Send_e133_line2_laying(uint8_t *r,uint8_t *g,uint8_t *b);
 void Send_e133_line3_laying(uint8_t *r,uint8_t *g,uint8_t *b);
 void Send_e133_line4_laying(uint8_t *r,uint8_t *g,uint8_t *b);
 void Send_e133_line5_laying(uint8_t *r,uint8_t *g,uint8_t *b);
 void Send_e133_line6_laying(uint8_t *r,uint8_t *g,uint8_t *b);
 void Send_e133_line7_laying(uint8_t *r,uint8_t *g,uint8_t *b);
-											 
+void Send_e133_line8_laying(uint8_t *r,uint8_t *g,uint8_t *b);
+void Send_e133_line9_laying(uint8_t *r,uint8_t *g,uint8_t *b);
+
 /**------------------------------------------------------------------------------------------------
   * @brief  : This is return  a and b of minimum value
   * @param  : None
@@ -161,7 +167,7 @@ static float maxValue(float a,float b) //calc maximum value
   * @param  : None
   * @retval : None
   *----------------------------------------------------------------------------------------------*/
-static void RGB_TO_HSV(const COLOR_RGB* input,COLOR_HSV* output)  // convert RGB value to HSV value 
+static void RGB_TO_HSV(COLOR_RGB* input,COLOR_HSV* output)  // convert RGB value to HSV value 
 {
     float r,g,b,minRGB,maxRGB,deltaRGB;
 
@@ -318,22 +324,25 @@ void switchONOFF(uint8_t Red, uint8_t Green, uint8_t Blue)
     Green0 = Green;
     Blue0 = Blue;
     Drv_SERIAL_Log("switchONOFF");
-    Send_s203_line1(Red, Green, Blue);
+    //Send_s203_line1(Red, Green, Blue);
+    Send_e133_line1(Red, Green, Blue);
     Send_e133_line2(Red, Green, Blue);
     Send_e133_line3(Red, Green, Blue);
     Send_e133_line4(Red, Green, Blue);
     Send_e133_line5(Red, Green, Blue);
     Send_e133_line6(Red, Green, Blue);
     Send_e133_line7(Red, Green, Blue);
+    Send_e133_line8(Red, Green, Blue);
+    Send_e133_line9(Red, Green, Blue);
 }
-
+/*
 void ColorGradualDimmingS203(uint8_t Red1, uint8_t Green1, uint8_t Blue1)
 {
     Drv_SERIAL_Log("S203 %d %d %d", Red1, Green1, Blue1);
 
     Send_s203_line1(Red1, Green1, Blue1);
 }
-
+*/
 void ColorGradualDimming(uint8_t Red1, uint8_t Green1, uint8_t Blue1)
 {
     //Drv_SERIAL_Log("Dimming %d %d %d", Red1, Green1, Blue1);
@@ -374,13 +383,16 @@ void ColorGradualDimming(uint8_t Red1, uint8_t Green1, uint8_t Blue1)
         Blue0       = (int)(f_blue0);
 
         //Drv_SERIAL_Log("step:%d [%d,%d,%d]", stepgo, Red0, Green0, Blue0);
-        Send_s203_line1(Red0, Green0, Blue0);
+        //Send_s203_line1(Red0, Green0, Blue0);
+        Send_e133_line1(Red0, Green0, Blue0);
         Send_e133_line2(Red0, Green0, Blue0);
         Send_e133_line3(Red0, Green0, Blue0);
         Send_e133_line4(Red0, Green0, Blue0);
         Send_e133_line5(Red0, Green0, Blue0);
         Send_e133_line6(Red0, Green0, Blue0);
         Send_e133_line7(Red0, Green0, Blue0);
+        Send_e133_line8(Red0, Green0, Blue0);
+        Send_e133_line9(Red0, Green0, Blue0);
         HAL_Delay(1);
     }
     // 记录当前颜色
@@ -388,20 +400,23 @@ void ColorGradualDimming(uint8_t Red1, uint8_t Green1, uint8_t Blue1)
     Green0 = Green1;
     Blue0  = Blue1;
 }
-
+/*
 void ColorLayingS203(uint8_t *Red0, uint8_t *Green0, uint8_t *Blue10)
 {
-    Send_s203_line1_laying(Red0, Green0, Blue0);
+    Send_s203_line1_laying((uint8_t*)Red0, (uint8_t*)Green0, (uint8_t*)Blue0);
 }
-
+*/
 void ColorLayingE133(uint8_t *Red0, uint8_t *Green0, uint8_t *Blue10)
 {
-    Send_e133_line2_laying(Red0, Green0, Blue0);
-    Send_e133_line3_laying(Red0, Green0, Blue0);
-    Send_e133_line4_laying(Red0, Green0, Blue0);
-    Send_e133_line5_laying(Red0, Green0, Blue0);
-    Send_e133_line6_laying(Red0, Green0, Blue0);
-    Send_e133_line7_laying(Red0, Green0, Blue0);
+    Send_e133_line1_laying((uint8_t*)Red0, (uint8_t*)Green0, (uint8_t*)Blue0);
+    Send_e133_line2_laying((uint8_t*)Red0, (uint8_t*)Green0, (uint8_t*)Blue0);
+    Send_e133_line3_laying((uint8_t*)Red0, (uint8_t*)Green0, (uint8_t*)Blue0);
+    Send_e133_line4_laying((uint8_t*)Red0, (uint8_t*)Green0, (uint8_t*)Blue0);
+    Send_e133_line5_laying((uint8_t*)Red0, (uint8_t*)Green0, (uint8_t*)Blue0);
+    Send_e133_line6_laying((uint8_t*)Red0, (uint8_t*)Green0, (uint8_t*)Blue0);
+    Send_e133_line7_laying((uint8_t*)Red0, (uint8_t*)Green0, (uint8_t*)Blue0);
+    Send_e133_line8_laying((uint8_t*)Red0, (uint8_t*)Green0, (uint8_t*)Blue0);
+    Send_e133_line9_laying((uint8_t*)Red0, (uint8_t*)Green0, (uint8_t*)Blue0);
 }
 
 void Drv_RGB_Init(void)
@@ -409,7 +424,7 @@ void Drv_RGB_Init(void)
     rgb_v.R = buff_R;
     rgb_v.G = buff_G;
     rgb_v.B = buff_B;
-	  rgb_v.l = 50;   //启动初始亮度50, rgb:9
+    rgb_v.l = 50;   //启动初始亮度50, rgb:9
 }
 
 
@@ -660,7 +675,7 @@ void Drv_RGB_Proc(void)
                     mode0_immedia = false;
                     //Drv_SERIAL_Log("e133 RGB");
                     ScenceLayering();
-                    ColorLayingS203((uint8_t*)cube_buff_R, (uint8_t*)cube_buff_G, (uint8_t*)cube_buff_B);
+                    //ColorLayingS203((uint8_t*)cube_buff_R, (uint8_t*)cube_buff_G, (uint8_t*)cube_buff_B);
                     ColorLayingE133((uint8_t*)cube_buff_R, (uint8_t*)cube_buff_G, (uint8_t*)cube_buff_B);
                     tickstart = HAL_GetTick();
                 }
@@ -1153,7 +1168,132 @@ void Send_8bits7(uint8_t dat1, uint8_t dat2, uint8_t dat3)
         dat3=dat3<<1;
     }
 }
+
+void Send_8bits8(uint8_t dat1, uint8_t dat2, uint8_t dat3)
+{
+    uint8_t i;
+
+    for(i=0;i<8;i++)
+    {
+        if(dat1 & 0x80)//1,for "1",H:0.8us,L:0.45us;
+        {
+            RGB_IO_8_PIN_H;
+            delay900;
+            RGB_IO_8_PIN_L;
+            delay100;
+        }
+        else    //0 ,for "0",H:0.4us,L: 0.85us
+        {
+            RGB_IO_8_PIN_H;
+            delay300;
+            RGB_IO_8_PIN_L;
+            delay600;
+        }
+        dat1=dat1<<1;
+    }
+
+    for(i=0;i<8;i++)
+    {
+        if(dat2 & 0x80)//1,for "1",H:0.8us,L:0.45us;
+        {
+            RGB_IO_8_PIN_H;
+            delay900;
+            RGB_IO_8_PIN_L;
+            delay100;
+        }
+        else    //0 ,for "0",H:0.4us,L: 0.85us
+        {
+            RGB_IO_8_PIN_H;
+            delay300;
+            RGB_IO_8_PIN_L;
+            delay600;
+        }
+        dat2=dat2<<1;
+    }
+
+    for(i=0;i<8;i++)
+    {
+        if(dat3 & 0x80)//1,for "1",H:0.8us,L:0.45us;
+        {
+            RGB_IO_8_PIN_H;
+            delay900;
+            RGB_IO_8_PIN_L;
+            delay100;
+        }
+        else    //0 ,for "0",H:0.4us,L: 0.85us
+        {
+            RGB_IO_8_PIN_H;
+            delay300;
+            RGB_IO_8_PIN_L;
+            delay600;
+        }
+        dat3=dat3<<1;
+    }
+}
+
+void Send_8bits9(uint8_t dat1, uint8_t dat2, uint8_t dat3)
+{
+    uint8_t i;
+
+    for(i=0;i<8;i++)
+    {
+        if(dat1 & 0x80)//1,for "1",H:0.8us,L:0.45us;
+        {
+            RGB_IO_9_PIN_H;
+            delay900;
+            RGB_IO_9_PIN_L;
+            delay100;
+        }
+        else    //0 ,for "0",H:0.4us,L: 0.85us
+        {
+            RGB_IO_9_PIN_H;
+            delay300;
+            RGB_IO_9_PIN_L;
+            delay600;
+        }
+        dat1=dat1<<1;
+    }
+
+    for(i=0;i<8;i++)
+    {
+        if(dat2 & 0x80)//1,for "1",H:0.8us,L:0.45us;
+        {
+            RGB_IO_9_PIN_H;
+            delay900;
+            RGB_IO_9_PIN_L;
+            delay100;
+        }
+        else    //0 ,for "0",H:0.4us,L: 0.85us
+        {
+            RGB_IO_9_PIN_H;
+            delay300;
+            RGB_IO_9_PIN_L;
+            delay600;
+        }
+        dat2=dat2<<1;
+    }
+
+    for(i=0;i<8;i++)
+    {
+        if(dat3 & 0x80)//1,for "1",H:0.8us,L:0.45us;
+        {
+            RGB_IO_9_PIN_H;
+            delay900;
+            RGB_IO_9_PIN_L;
+            delay100;
+        }
+        else    //0 ,for "0",H:0.4us,L: 0.85us
+        {
+            RGB_IO_9_PIN_H;
+            delay300;
+            RGB_IO_9_PIN_L;
+            delay600;
+        }
+        dat3=dat3<<1;
+    }
+}
 //IO 1
+/*
 void Send_s203_line1(uint8_t r,uint8_t g,uint8_t b)
 {
     uint8_t i=0;
@@ -1165,6 +1305,7 @@ void Send_s203_line1(uint8_t r,uint8_t g,uint8_t b)
     }
     __enable_irq();
 }
+
 void Send_s203_line1_laying(uint8_t *r,uint8_t *g,uint8_t *b)
 {
     uint8_t i=0;
@@ -1176,6 +1317,33 @@ void Send_s203_line1_laying(uint8_t *r,uint8_t *g,uint8_t *b)
     }
     __enable_irq();
 }
+*/
+
+void Send_e133_line1(uint8_t r,uint8_t g,uint8_t b)
+{
+    uint8_t i=0;
+
+    __disable_irq();
+    for(i=0;i<LINE_1_SIZE;i++)
+    {
+        Send_8bits1(r,g,b);
+    }
+    __enable_irq();
+}
+
+
+void Send_e133_line1_laying(uint8_t *r,uint8_t *g,uint8_t *b)
+{
+    uint8_t i=0;
+
+    __disable_irq();
+    for(i=0;i<LINE_1_SIZE;i++)
+    {
+        Send_8bits1(r[i],g[i],b[i]);
+    }
+    __enable_irq();
+}
+
 void Send_e133_line2(uint8_t r,uint8_t g,uint8_t b)
 {
     uint8_t i=0;
@@ -1310,6 +1478,50 @@ void Send_e133_line7_laying(uint8_t *r,uint8_t *g,uint8_t *b)
     for(i=0;i<LINE_7_SIZE;i++)
     {
         Send_8bits7(r[i],g[i],b[i]);
+    }
+    __enable_irq();
+}
+void Send_e133_line8(uint8_t r,uint8_t g,uint8_t b)
+{
+    uint8_t i=0;
+
+    __disable_irq();
+    for(i=0;i<LINE_8_SIZE;i++)
+    {
+        Send_8bits8(r,g,b);
+    }
+    __enable_irq();
+}
+void Send_e133_line8_laying(uint8_t *r,uint8_t *g,uint8_t *b)
+{
+    uint8_t i=0;
+
+    __disable_irq();
+    for(i=0;i<LINE_8_SIZE;i++)
+    {
+        Send_8bits8(r[i],g[i],b[i]);
+    }
+    __enable_irq();
+}
+void Send_e133_line9(uint8_t r,uint8_t g,uint8_t b)
+{
+    uint8_t i=0;
+
+    __disable_irq();
+    for(i=0;i<LINE_9_SIZE;i++)
+    {
+        Send_8bits9(r,g,b);
+    }
+    __enable_irq();
+}
+void Send_e133_line9_laying(uint8_t *r,uint8_t *g,uint8_t *b)
+{
+    uint8_t i=0;
+
+    __disable_irq();
+    for(i=0;i<LINE_9_SIZE;i++)
+    {
+        Send_8bits9(r[i],g[i],b[i]);
     }
     __enable_irq();
 }
