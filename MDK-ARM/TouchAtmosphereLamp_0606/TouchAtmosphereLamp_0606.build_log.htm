@@ -22,29 +22,71 @@ Dialog DLL:      TARMCM1.DLL V1.14.2.0
  
 <h2>Project:</h2>
 C:\Users\boaz\Desktop\wp\TouchAtmosphereLamp_0606\MDK-ARM\TouchAtmosphereLamp_0606.uvprojx
-Project File Date:  06/12/2022
+Project File Date:  08/08/2022
 
 <h2>Output:</h2>
 *** Using Compiler 'V6.14', folder: 'C:\Keil_v5\ARM\ARMCLANG\Bin'
 Build target 'TouchAtmosphereLamp_0606'
-../Core/Src/main.c(89): warning: implicit declaration of function 'Drv_RGB_Init' is invalid in C99 [-Wimplicit-function-declaration]
-  Drv_RGB_Init();
-  ^
-../Core/Src/main.c(108): warning: implicit declaration of function 'Drv_LED_Proc' is invalid in C99 [-Wimplicit-function-declaration]
-                Drv_LED_Proc();
-                ^
-../Core/Src/main.c(111): warning: implicit declaration of function 'Drv_Panel_Proc' is invalid in C99 [-Wimplicit-function-declaration]
-    Drv_Panel_Proc();
-    ^
-../Core/Src/main.c(112): warning: implicit declaration of function 'Drv_SERIAL_Proc' is invalid in C99 [-Wimplicit-function-declaration]
-    Drv_SERIAL_Proc();
-    ^
-4 warnings generated.
-compiling main.c...
+../Core/Src/drv_rgb.c(53): warning: braces around scalar initializer [-Wbraced-scalar-init]
+    {50},
+    ^~~~
+../Core/Src/drv_rgb.c(54): warning: braces around scalar initializer [-Wbraced-scalar-init]
+    {40},
+    ^~~~
+../Core/Src/drv_rgb.c(55): warning: braces around scalar initializer [-Wbraced-scalar-init]
+    {30},
+    ^~~~
+../Core/Src/drv_rgb.c(56): warning: braces around scalar initializer [-Wbraced-scalar-init]
+    {20},
+    ^~~~
+../Core/Src/drv_rgb.c(57): warning: braces around scalar initializer [-Wbraced-scalar-init]
+    {10},
+    ^~~~
+../Core/Src/drv_rgb.c(294): warning: passing 'volatile COLOR_RGB *' to parameter of type 'COLOR_RGB *' discards qualifiers [-Wincompatible-pointer-types-discards-qualifiers]
+    RGB_TO_HSV(&rgb_v,&hsv_v);
+               ^~~~~~
+../Core/Src/drv_rgb.c(171): note: passing argument to parameter 'input' here
+static void RGB_TO_HSV(COLOR_RGB* input,COLOR_HSV* output)  // convert RGB value to HSV value 
+                                  ^
+../Core/Src/drv_rgb.c(306): warning: passing 'volatile COLOR_RGB *' to parameter of type 'COLOR_RGB *' discards qualifiers [-Wincompatible-pointer-types-discards-qualifiers]
+    HSV_TO_RGB(&hsv_v,&rgb_v);
+                      ^~~~~~
+../Core/Src/drv_rgb.c(227): note: passing argument to parameter 'output' here
+static void HSV_TO_RGB(COLOR_HSV* input,COLOR_RGB* output)  //convert HSV value to RGB value
+                                                   ^
+../Core/Src/drv_rgb.c(412): warning: cast to 'uint8_t *' (aka 'unsigned char *') from smaller integer type 'unsigned char' [-Wint-to-pointer-cast]
+    Send_e133_line1_laying((uint8_t*)Red0, (uint8_t*)Green0, (uint8_t*)Blue0);
+                                                             ^
+../Core/Src/drv_rgb.c(413): warning: cast to 'uint8_t *' (aka 'unsigned char *') from smaller integer type 'unsigned char' [-Wint-to-pointer-cast]
+    Send_e133_line2_laying((uint8_t*)Red0, (uint8_t*)Green0, (uint8_t*)Blue0);
+                                                             ^
+../Core/Src/drv_rgb.c(414): warning: cast to 'uint8_t *' (aka 'unsigned char *') from smaller integer type 'unsigned char' [-Wint-to-pointer-cast]
+    Send_e133_line3_laying((uint8_t*)Red0, (uint8_t*)Green0, (uint8_t*)Blue0);
+                                                             ^
+../Core/Src/drv_rgb.c(415): warning: cast to 'uint8_t *' (aka 'unsigned char *') from smaller integer type 'unsigned char' [-Wint-to-pointer-cast]
+    Send_e133_line4_laying((uint8_t*)Red0, (uint8_t*)Green0, (uint8_t*)Blue0);
+                                                             ^
+../Core/Src/drv_rgb.c(416): warning: cast to 'uint8_t *' (aka 'unsigned char *') from smaller integer type 'unsigned char' [-Wint-to-pointer-cast]
+    Send_e133_line5_laying((uint8_t*)Red0, (uint8_t*)Green0, (uint8_t*)Blue0);
+                                                             ^
+../Core/Src/drv_rgb.c(417): warning: cast to 'uint8_t *' (aka 'unsigned char *') from smaller integer type 'unsigned char' [-Wint-to-pointer-cast]
+    Send_e133_line6_laying((uint8_t*)Red0, (uint8_t*)Green0, (uint8_t*)Blue0);
+                                                             ^
+../Core/Src/drv_rgb.c(418): warning: cast to 'uint8_t *' (aka 'unsigned char *') from smaller integer type 'unsigned char' [-Wint-to-pointer-cast]
+    Send_e133_line7_laying((uint8_t*)Red0, (uint8_t*)Green0, (uint8_t*)Blue0);
+                                                             ^
+../Core/Src/drv_rgb.c(419): warning: cast to 'uint8_t *' (aka 'unsigned char *') from smaller integer type 'unsigned char' [-Wint-to-pointer-cast]
+    Send_e133_line8_laying((uint8_t*)Red0, (uint8_t*)Green0, (uint8_t*)Blue0);
+                                                             ^
+../Core/Src/drv_rgb.c(420): warning: cast to 'uint8_t *' (aka 'unsigned char *') from smaller integer type 'unsigned char' [-Wint-to-pointer-cast]
+    Send_e133_line9_laying((uint8_t*)Red0, (uint8_t*)Green0, (uint8_t*)Blue0);
+                                                             ^
+16 warnings generated.
+compiling drv_rgb.c...
 linking...
-Program Size: Code=20076 RO-data=980 RW-data=120 ZI-data=2200  
+Program Size: Code=21272 RO-data=980 RW-data=120 ZI-data=2200  
 FromELF: creating hex file...
-"TouchAtmosphereLamp_0606\TouchAtmosphereLamp_0606.axf" - 0 Error(s), 4 Warning(s).
+"TouchAtmosphereLamp_0606\TouchAtmosphereLamp_0606.axf" - 0 Error(s), 16 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -68,7 +110,7 @@ Package Vendor: Keil
 
    * Component: ARM::CMSIS:CORE:5.5.0
       Include file:  CMSIS\Core\Include\tz_context.h
-Build Time Elapsed:  00:00:03
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>
